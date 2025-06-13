@@ -1,4 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@aeromechanic</title>
@@ -20,6 +21,20 @@
             color: white;
         }
 
+        /* Image background (default) */
+        .image-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background-image: url('./background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
         /* Video background */
         .video-background {
             position: fixed;
@@ -29,6 +44,12 @@
             height: 100%;
             z-index: -2;
             object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-background.loaded {
+            opacity: 1;
         }
 
         /* Overlay to darken video and maintain readability */
@@ -299,8 +320,11 @@
     </style>
 </head>
 <body>
+    <!-- Image background (default) -->
+    <div class="image-background"></div>
+    
     <!-- Video background -->
-    <video class="video-background" autoplay="" muted="" loop="">
+    <video class="video-background" id="backgroundVideo" autoplay="" muted="" loop="">
         <source src="./background.mp4" type="video/mp4">
     </video>
     
@@ -348,7 +372,7 @@
             </a>
             <a href="https://www.youtube.com/@minecraft_ai_videos" target="_blank" rel="noopener noreferrer" class="social-icon" title="Link to YouTube">
                 <svg viewBox="0 0 24 24">
-                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
                 </svg>
             </a>
         </div>
@@ -375,11 +399,23 @@
         // Get elements
         const enterOverlay = document.getElementById('enterOverlay');
         const backgroundMusic = document.getElementById('backgroundMusic');
+        const backgroundVideo = document.getElementById('backgroundVideo');
         const musicControl = document.getElementById('musicControl');
         const playIcon = document.getElementById('playIcon');
         const pauseIcon = document.getElementById('pauseIcon');
 
         let musicPlaying = false;
+
+        // Video loading functionality
+        backgroundVideo.addEventListener('loadeddata', function() {
+            // Video has loaded successfully, show it with a smooth transition
+            backgroundVideo.classList.add('loaded');
+        });
+
+        backgroundVideo.addEventListener('error', function() {
+            // Video failed to load, image background will remain visible
+            console.log('Video failed to load, using image background');
+        });
 
         // Click to enter functionality
         function hideOverlay() {
@@ -422,6 +458,7 @@
         // Set initial music volume (optional - adjust as needed)
         backgroundMusic.volume = 0.5;
     </script>
+
 
 
 </body></html>
